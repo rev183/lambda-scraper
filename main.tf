@@ -29,7 +29,7 @@ module "lambda_proxy" {
     Statement = [{
       Effect   = "Allow"
       Action   = "lambda:InvokeFunctionUrl"
-      Resource = aws_lambda_function_url.lambda_proxy_i[*].function_arn
+      Resource = replace(aws_lambda_function_url.lambda_proxy_i[0].function_arn, "-0", "-*")
     }]
   })
 }

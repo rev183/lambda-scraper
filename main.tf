@@ -7,6 +7,50 @@ module "lambda_proxy_i" {
   package_type   = "Image"
   timeout        = 600
   publish        = true
+
+  # Use the shared IAM role
+  create_role = false
+  lambda_role = aws_iam_role.lambda_execution_role.arn
+}
+
+resource "aws_iam_role" "lambda_execution_role" {
+  name = "lambda_execution_role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Effect = "Allow",
+      Principal = {
+        Service = "lambda.amazonaws.com"
+      },
+      Action = "sts:AssumeRole"
+    }]
+  })
+}
+
+resource "aws_iam_policy" "lambda_policy" {
+  name = "lambda_policy"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Effect = "Allow",
+      Action = [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents",
+      ],
+      Resource = [
+          "arn:aws:logs:ap-south-1:569157651643:log-group:/aws/lambda/proxy-*:*:*",
+          "arn:aws:logs:ap-south-1:569157651643:log-group:/aws/lambda/proxy-*:*"
+     ]
+    }]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_execution_role_policy_attachment" {
+  role       = aws_iam_role.lambda_execution_role.name
+  policy_arn = aws_iam_policy.lambda_policy.arn
 }
 
 resource "local_file" "proxy_urls" {

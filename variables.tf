@@ -1,6 +1,6 @@
 variable "num_proxies" {
   type    = number
-  default = 300
+  default = 1000
 }
 
 variable "region" {

@@ -8,3 +8,4 @@ proxy-urls.json
 testCA.key
 testCA.pem
 .env
+.DS_Store

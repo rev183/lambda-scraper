@@ -2,12 +2,14 @@ if (typeof (awslambda) === 'undefined') {
     // For testing
     global.awslambda = require('./awslambda');
 }
+const urlsFileName = process.env.PROXY_URLS_FILE_NAME
 const axios = require('axios');
 const pipeline = require('util').promisify(require('stream').pipeline);
 const { defaultProvider } = require("@aws-sdk/credential-provider-node");
 const { SignatureV4 } = require("@smithy/signature-v4");
 const { Sha256 } = require("@aws-crypto/sha256-js");
-const proxyUrls = require('./proxy-urls.json');
+const proxyUrls = require(`./${urlsFileName}`);
+
 
 exports.lambdaHandler = awslambda.streamifyResponse(async (event, responseStream, context) => {
     try {

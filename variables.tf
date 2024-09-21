@@ -3,7 +3,7 @@ variable "num_proxies" {
   default = 1000
 }
 
-variable "region" {
+variable "region_default" {
   type    = string
   default = "ap-south-1"
 }

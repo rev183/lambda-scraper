@@ -19,6 +19,17 @@ module lambda_proxy_apse1 {
   lambda_role_arn = aws_iam_role.lambda_execution_role.arn
 }
 
+module lambda_proxy_apse2 {
+  source      = "./module"
+  providers       = { 
+    aws    = aws.apse2
+    docker = docker.apse2
+  }
+  num_proxies     = var.num_proxies
+  region          = "ap-southeast-2"
+  lambda_role_arn = aws_iam_role.lambda_execution_role.arn
+}
+
 module lambda_proxy_usw1 {
   source      = "./module"
   providers       = { 
@@ -27,6 +38,39 @@ module lambda_proxy_usw1 {
   }
   num_proxies     = var.num_proxies
   region          = "us-west-1"
+  lambda_role_arn = aws_iam_role.lambda_execution_role.arn
+}
+
+module lambda_proxy_usw2 {
+  source      = "./module"
+  providers       = { 
+    aws    = aws.usw2
+    docker = docker.usw2
+  }
+  num_proxies     = var.num_proxies
+  region          = "us-west-2"
+  lambda_role_arn = aws_iam_role.lambda_execution_role.arn
+}
+
+module lambda_proxy_euc1 {
+  source      = "./module"
+  providers       = { 
+    aws    = aws.euc1
+    docker = docker.euc1
+  }
+  num_proxies     = var.num_proxies
+  region          = "eu-central-1"
+  lambda_role_arn = aws_iam_role.lambda_execution_role.arn
+}
+
+module lambda_proxy_eun1 {
+  source      = "./module"
+  providers       = { 
+    aws    = aws.eun1
+    docker = docker.eun1
+  }
+  num_proxies     = var.num_proxies
+  region          = "eu-north-1"
   lambda_role_arn = aws_iam_role.lambda_execution_role.arn
 }
 

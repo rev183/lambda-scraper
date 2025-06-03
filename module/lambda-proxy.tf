@@ -27,7 +27,7 @@ module "lambda_proxy_i" {
 
 resource "local_file" "proxy_urls" {
   content  = jsonencode(aws_lambda_function_url.lambda_proxy_i[*].function_url)
-  filename = "${path.module}/../lambda/proxy-urls-${var.region}.json"
+  filename = "${path.module}/../lambda/proxy-urls-${var.region}-${var.aws_profile}.json"
 }
 
 module "lambda_proxy" {
@@ -42,7 +42,7 @@ module "lambda_proxy" {
   role_name          = "proxy-${var.region}"
 
   environment_variables = {
-    PROXY_URLS_FILE_NAME = "proxy-urls-${var.region}.json"
+    PROXY_URLS_FILE_NAME = "proxy-urls-${var.region}-${var.aws_profile}.json"
   }
 
   policy_json = jsonencode({
@@ -96,13 +96,13 @@ module "ecr_proxy" {
   platform         = "linux/amd64"
   depends_on       = [local_file.proxy_urls]
   build_args       = {
-    PROXY_URLS_FILE_NAME = "proxy-urls-${var.region}.json"
+    PROXY_URLS_FILE_NAME = "proxy-urls-${var.region}-${var.aws_profile}.json"
   }
 
   image_tag = sha1(join("", [
     filesha1("${path.module}/../lambda/package.json"),
     filesha1("${path.module}/../lambda/proxy.js"),
-    fileexists("${path.module}/../lambda/proxy-urls-${var.region}.json") ? filesha1("${path.module}/../lambda/proxy-urls-${var.region}.json") : "",
+    fileexists("${path.module}/../lambda/proxy-urls-${var.region}-${var.aws_profile}.json") ? filesha1("${path.module}/../lambda/proxy-urls-${var.region}-${var.aws_profile}.json") : "",
     filesha1("${path.module}/../lambda/Dockerfile"),
   ]))
 
